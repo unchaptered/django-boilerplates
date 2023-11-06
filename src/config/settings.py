@@ -13,7 +13,7 @@ SECRET_KEY = "django-insecure-9rzlg=@vi-93hw-d86ph5xp^^nz%1kv74l)p4a1_mg!=gn*#ue
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ '*' ]
 
 
 # Application definition
@@ -31,7 +31,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -111,7 +111,9 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# CUSTOM
-
-APPEND_SLASH = False
+############################### CSRF 비활성화 (보안 위험)
 CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = None
+
+############################## APPEND REDIRECT 비활성화
+APPEND_SLASH = False
