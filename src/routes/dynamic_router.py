@@ -61,11 +61,10 @@ class DynamicRouter:
                 injectedMethods = {}
                 for childPathDict in controller.__childPathDictList__[childPath]:
                     injectedMethod = childPathDict['method']
-                    injectedFunction = childPathDict['callable']
+                    injectedFunction = csrf_exempt(childPathDict['callable'])
                     
                     injectedMethods[injectedMethod] = injectedFunction
                 
-                controller.__childPathDictList__[childPath]
                 DynamicView: type[BaseController] = type(childPath, (View, ), injectedMethods)
                 urlpattern.append(
                     path(childPath, DynamicView.as_view(), name=f'{childPath}-view')
