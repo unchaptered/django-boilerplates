@@ -1,3 +1,6 @@
+# 테스트 케이스 1
+# @Module, @Controller 테스트
+
 # decorators
 from decorators.injectable_decorator import Injectable
 from decorators.controller_decorator import Controller
