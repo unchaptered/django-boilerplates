@@ -13,6 +13,8 @@ def injectController(classType: type,
                      controllers: List[Type]
 ) -> None:
     
+    className = classType.__name__
+
     for ct in controllers:
         
         ctName = ct.__name__
@@ -42,11 +44,13 @@ def injectController(classType: type,
             # else:
             #     controllerList.append(ct)
             
-            setattr(classType, f'_{ctName}__{ctName}', ct)
+            setattr(classType, f'_{className}__{ctName}', ct)
 
 def injectProvider(classType: type,
                    providers: List[Type]):
     
+    className = classType.__name__
+
     for pr in providers:
         
         prName = pr.__name__
@@ -74,7 +78,7 @@ def injectProvider(classType: type,
             # else:
             #     providerList.append(pr)
             
-            setattr(classType, f'_{prName}_{prName}', pr)
+            setattr(classType, f'_{className}_{prName}', pr)
             
 def injectExport(classType: type,
                  exports: List[type]):
@@ -90,10 +94,30 @@ def injectExport(classType: type,
 def injectModule(classType: type,
                  modules: List[type]):
     
+    className = classType.__name__
     for md in modules:
         
         mdName = md.__name__
         mdType = getattr(md, ijType.KEY, None)
         
-        canExport = mdType == ijType.INJECTOR_PROVIDER
-        isDupProvider = hasattr(classType, mdType)
+        # canImport = mdType == ijType.INJECTOR_MODULE
+        # if canImport:
+        #     print(mdName, mdType)
+        #     isDupProvider = hasattr(classType, mdType)
+            
+        isInvalidModule = mdType != ijType.INJECTOR_MODULE
+        isDupModule = hasattr(classType, mdName)
+        
+        if isInvalidModule:
+            raise UnMatchedControllerException([
+                f'{md}.{mdType} is not equal {ijType.INJECTOR_MODULE}'
+            ]) 
+            
+        if isDupModule:
+            raise DuplicationControllerException([
+                f'{md}.{mdType} is not unique'
+            ])
+            
+        else:
+            
+            setattr(classType, f'_{className}_{mdName}', md)

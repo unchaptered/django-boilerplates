@@ -41,6 +41,7 @@ def convertUrlPatterns(self):
             InnerClass = attr
             
             ijValue = getattr(InnerClass, ijType.KEY)
+            
             isController = ijValue == ijType.INJECTOR_CONTROLLER
             if isController:
                 
@@ -53,7 +54,6 @@ def convertUrlPatterns(self):
                 
                 parentPath = getattr(ctl, pathType.PARENT_PATH, None)
                 childrenPathDictList = getattr(ctl, pathType.CHILDREN_PATH_LIST, [])
-                
                 
                 ctlUrlFormatDictList = {}
                 for key in childrenPathDictList:
@@ -92,7 +92,16 @@ def convertUrlPatterns(self):
                     )
                 
                 urlpattern.extend(ctlUrlPattern)
-                    
+                
+            isModule = ijValue == ijType.INJECTOR_MODULE
+            isNotRootModule = key != '__class__'
+            if isModule and isNotRootModule:
+                
+                ModuleClass = getattr(self, key)
+                moduleClass = ModuleClass()
+                moduleUrlPatterns = moduleClass.convertUrlPatterns()
+                urlpattern.extend(moduleUrlPatterns)
+                
     return urlpattern    
 
 def Module(**kwargs: ModuleParamTypedDict):
@@ -104,8 +113,8 @@ def Module(**kwargs: ModuleParamTypedDict):
         
         injectController(targetCls, kwargs.get('controllers', []))
         injectProvider(targetCls, kwargs.get('providers', []))
-        injectExport(targetCls, kwargs.get('imports', []))
-        injectModule(targetCls, kwargs.get('exports', []))
+        injectExport(targetCls, kwargs.get('exports', []))
+        injectModule(targetCls, kwargs.get('imports', []))
         
         setattr(targetCls, routerType.KEY, convertUrlPatterns)
         

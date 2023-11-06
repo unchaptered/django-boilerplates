@@ -1,1 +1,1 @@
-KEY = 'convertUrlPattern'
+KEY = 'convertUrlPatterns'
