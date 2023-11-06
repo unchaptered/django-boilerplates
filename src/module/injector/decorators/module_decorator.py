@@ -42,9 +42,11 @@ def convertUrlPatterns(self):
             
             ijValue = getattr(InnerClass, ijType.KEY)
             
+            # [CASE A] 클래스인 경우
             isController = ijValue == ijType.INJECTOR_CONTROLLER
             if isController:
                 
+                # [STEP 1] 데코레이터 태깅 생성 (최초 1회 호출 필요)
                 ctl = InnerClass()
                 ctlMethodNameList = [ m for m in dir(ctl) if ( callable(getattr(ctl, m)) and not m.startswith("_") ) ]
                 for ctlMethodName in ctlMethodNameList:    
@@ -52,6 +54,7 @@ def convertUrlPatterns(self):
                     ctlMethod('This method is interrupted')
                 # print('✅ : ', dir(ctl))
                 
+                # [STEP 2] childrenPathDict['path'] 를 키로가지는 Mapper 생성
                 parentPath = getattr(ctl, pathType.PARENT_PATH, None)
                 childrenPathDictList = getattr(ctl, pathType.CHILDREN_PATH_LIST, [])
                 
@@ -74,6 +77,7 @@ def convertUrlPatterns(self):
                     else:
                         ctlUrlFormatDictList[childrenPath] = [ childrenPathDict ]
                 
+                # [STEP 3] childrenPathDict['path'] 를 가지는 Mapper 로 urlPattern 생성
                 ctlUrlPattern = []
                 for key in ctlUrlFormatDictList:
                     
@@ -92,7 +96,8 @@ def convertUrlPatterns(self):
                     )
                 
                 urlpattern.extend(ctlUrlPattern)
-                
+            
+            # [CASE B] 모듈인 경우
             isModule = ijValue == ijType.INJECTOR_MODULE
             isNotRootModule = key != '__class__'
             if isModule and isNotRootModule:

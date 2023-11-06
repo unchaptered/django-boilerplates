@@ -8,19 +8,13 @@ import type.injector_type as ijType
 
 def get(path):
     
-    # print('@get ', path)
-    
     incorrectPathStrs = re.findall('[^a-zA-Z\-]', path)
     if len(incorrectPathStrs) > 0:
         raise ReferenceError('path must contain a-zA-Z')
     
     def decorator(fn):
         
-        # print('@get.decorator ', fn)
-        
         def wrapper(targetCls: Type[type], *args, **kwargs):
-            
-            # print('@get.decorator.wrapper ', targetCls)
             
             childrenPathList = getattr(targetCls, pathType.CHILDREN_PATH_LIST, {})
             
